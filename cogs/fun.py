@@ -23,7 +23,7 @@ class Fun(commands.Cog):
         self.bot = bot
         self.colours = ["🟥","🟩","🟪","🟧","🟨","🟫","🔳"]
 
-    @commands.command(help="<:amogus:826403430905937941>") # Need to check this emote will actually appear in the help embed (he never checked)
+    @commands.command(help="<:amogus:826403430905937941>") # Need to check this emote will actually appear in the help embed (it doesn't)
     async def amogus(self, ctx):
         square_colour = choice(self.colours)
         if randint(0,10) == 10:
@@ -46,243 +46,61 @@ class Fun(commands.Cog):
 ⬛{square_colour}{square_colour}⬛⬛{square_colour}{square_colour}""")
 
     @commands.cooldown(1, 2, commands.BucketType.user)
-    @commands.group(invoke_without_command=True, help="Posts a kawaii neko")
+    @commands.command(help="Posts a kawaii waifu")
+    async def waifu(self, ctx):
+        async with ctx.channel.typing():
+            async with self.bot.session.get("https://api.waifu.pics/sfw/waifu") as resp:
+                url = loads(await resp.text())["url"]
+                logging.info(url)
+            async with self.bot.session.get(url) as resp:
+                root, ext = splitext(url)
+                try:
+                    await ctx.reply(file=File(BytesIO(await resp.read()), f"kawaii_waifu{ext}"))
+                except HTTPException:
+                    await ctx.reply(url)
+    
+    @commands.cooldown(1, 2, commands.BucketType.user)
+    @commands.command(aliases=["nya"], help="Posts a kawaii neko")
     async def neko(self, ctx):
-        await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/neko"), "neko.png")) #also vital
+        async with ctx.channel.typing():
+            async with self.bot.session.get("https://api.waifu.pics/sfw/neko") as resp:
+                url = loads(await resp.text())["url"]
+                logging.info(url)
+            async with self.bot.session.get(url) as resp:
+                root, ext = splitext(url)
+                try:
+                    await ctx.reply(file=File(BytesIO(await resp.read()), f"kawaii_neko{ext}"))
+                except HTTPException:
+                    await ctx.reply(url)
 
     @commands.cooldown(1, 2, commands.BucketType.user)
-    @neko.command(help="Posts a kawaii neko gif")
-    async def gif(self, ctx):
-        await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/ngif"), "neko.gif")) #def vital, without the bot wont run correctly
+    @commands.command(help="Posts a kawaii awoo")
+    async def awoo(self, ctx):
+        async with ctx.channel.typing():
+            async with self.bot.session.get("https://api.waifu.pics/sfw/awoo") as resp:
+                url = loads(await resp.text())["url"]
+                logging.info(url)
+            async with self.bot.session.get(url) as resp:
+                root, ext = splitext(url)
+                try:
+                    await ctx.reply(file=File(BytesIO(await resp.read()), f"kawaii_awoo{ext}"))
+                except HTTPException:
+                    await ctx.reply(url)
 
     @commands.cooldown(1, 2, commands.BucketType.user)
-    @commands.command(help="Posts a kawaii fox girl")
-    async def fox(self, ctx):
-        await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/fox_girl"), "fox.png")) #also vital please believe me thanks
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @commands.group(invoke_without_command=True, help="Posts some kawaii feet")
+    @commands.command(help="Posts an nsfw waifu")
     @commands.is_nsfw()
-    async def feet(self, ctx):
-        await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/feet"), "feet.png"))
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @commands.command(help="Posts some kawaii yuri action")
-    @commands.is_nsfw()
-    async def yuri(self, ctx):
-        await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/yuri"), "yuri.png"))
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @commands.command(help="Posts a kawaii futanari")
-    @commands.is_nsfw()
-    async def futa(self, ctx):
-        await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/futanari"), "futa.png"))
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @commands.command(help="Posts a kawaii lewd kemonomimi")
-    @commands.is_nsfw()
-    async def lewdkemo(self, ctx):
-        await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/lewdkemo"), "lewdkemo.png"))
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @feet.command(aliases=["gif"], help="Posts a kawaii feet gif")
-    @commands.is_nsfw()
-    async def feet_gif(self, ctx):
-            await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/feetg"), "feet.gif"))
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @commands.group(invoke_without_command=True, help="Posts some kawaii cumming")
-    @commands.is_nsfw()
-    async def cum(self, ctx):
-        await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/cum"), "cum.gif"))
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @commands.command(help="Posts some kawaii lewd kemonomimi")
-    @commands.is_nsfw()
-    async def erokemo(self, ctx):
-        await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/erokemo"), "erokemo.png"))
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @commands.command(help="I have no idea what this posts exactly, just try it, it's probably pretty kawaii")
-    @commands.is_nsfw()
-    async def les(self, ctx):
-        await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/les"), "les.gif"))
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @commands.command(help="Posts a kawaii lewd fox girl")
-    @commands.is_nsfw()
-    async def lewdfox(self, ctx):
-        await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/lewdk"), "lewdk.png"))
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @commands.command(help="Posts some kawaii lewd yuri action")
-    @commands.is_nsfw()
-    async def eroyuri(self, ctx):
-        await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/eroyuri"), "eroyuri.png"))
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @commands.command(help="Posts some kawaii lewd neko")
-    @commands.is_nsfw()
-    async def eron(self, ctx):
-        await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/eron"), "eron.png"))
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @cum.command(aliases=["jpg"], help="Posts a kawaii yummy cummy gif") #haha cum funny
-    @commands.is_nsfw()
-    async def cum_jpg(self, ctx):
-        await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/cum_jpg"), "cum.jpg"))
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @commands.command(help="Posts a kawaii blowjob gif")
-    @commands.is_nsfw()
-    async def bj(self, ctx):
-        await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/bj"), "bj.gif"))
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @commands.command(help="Posts a kawaii solo girl")
-    @commands.is_nsfw()
-    async def solo(self, ctx):
-        await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/solo"), "solo.png"))
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @commands.command(help="Posts a kawaii kemonomimi")
-    async def kemo(self, ctx):
-        await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/kemonomimi"), "kemonomimi.png"))
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @commands.command(help="Posts a kawaii lewd avatar for your use, if you want")
-    @commands.is_nsfw()
-    async def nsfw_avatar(self, ctx):
-        await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/nsfw_avatar"), "nsfw_avatar.png"))
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @commands.command(help="Posts a kawaii anal gif")
-    @commands.is_nsfw()
-    async def anal(self, ctx):
-            await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/anal"), "anal.gif"))
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @commands.command(help="Posts a kawaii lewd image")
-    @commands.is_nsfw()
-    async def hentai(self, ctx):
-            await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/hentai"), "hentai.png"))
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @commands.command(help="Posts some kawaii lewd feet")
-    @commands.is_nsfw()
-    async def erofeet(self, ctx):
-            await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/erofeet"), "erofeet.png"))
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @commands.command(help="Posts a kawaii artwork by ke-ta")
-    @commands.is_nsfw()
-    async def keta(self, ctx):
-            await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/keta"), "keta.png"))
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @commands.command(help="Posts a kawaii blowjob image")
-    @commands.is_nsfw()
-    async def blowjob(self, ctx):
-            await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/blowjob"), "blowjob.png"))
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @commands.group(invoke_without_command=True, help="Posts a kawaii gif of some pussy")
-    @commands.is_nsfw()
-    async def pussy(self, ctx):
-            await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/pussy"), "pussy.gif"))
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @commands.command(help="Posts some kawaii booba")
-    @commands.is_nsfw()
-    async def booba(self, ctx):
-            await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/tits"), "tits.png"))
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @commands.command(help="Posts a truly kawaii lizard")
-    async def lizard(self, ctx):
-        await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/lizard"), "lizard.png"))
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @pussy.command(aliases=["jpg"], help="Posts a kawaii image of some pussy")
-    @commands.is_nsfw()
-    async def pussy_jpg(self, ctx):
-            await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/pussy_jpg"), "pussy.jpg"))
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @commands.command(help="I have no idea what this posts")
-    @commands.is_nsfw()
-    async def pwankg(self, ctx):
-            await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/pwankg"), "pwankg.gif"))
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @commands.command(help="I have no idea what this posts either")
-    @commands.is_nsfw()
-    async def classic(self, ctx):
-            await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/classic"), "classic.gif"))
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @commands.command(help="No idea, just try")
-    @commands.is_nsfw()
-    async def kuni(self, ctx):
-            await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/kuni"), "kuni.gif"))
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @commands.command(help="Posts some kawaii femdom")
-    @commands.is_nsfw()
-    async def femdom(self, ctx):
-            await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/femdom"), "femdom.png"))
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @commands.command(help="Posts some kawaii lewd kitsune")
-    @commands.is_nsfw()
-    async def ero_kitsune(self, ctx):
-            await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/erok"), "erok.png")) 
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @commands.command(help="Posts a kawaii lewd fox girl")
-    @commands.is_nsfw()
-    async def fox_girl(self, ctx):
-        await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/fox_girl"), "fox_girl.png"))
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @commands.command(help="More booba")
-    @commands.is_nsfw()
-    async def boobs(self, ctx):
-        await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/boobs"), "boobs.gif"))
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @commands.command(help="what")
-    @commands.is_nsfw()
-    async def ero(self, ctx):
-        await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/ero"), "ero.png"))
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @commands.command(help="Posts a kawaii smug gif")
-    async def smug(self, ctx):
-        await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/smug"), "smug.gif"))
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @commands.command(help="Posts a truly kawaii goose")
-    async def goose(self, ctx):
-        await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/goose"), "goose.png"))
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @commands.command(help="Posts a kawaii lewd trap")
-    @commands.is_nsfw()
-    async def trap(self, ctx):
-        await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/trap"), "trap.png"))
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @neko.group(invoke_without_command=True, help="Posts a kawaii lewd neko")
-    @commands.is_nsfw()
-    async def lewd(self, ctx):
-            await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/lewd"), "neko_lewd.png")) #equally as vital
-
-    @commands.cooldown(1, 2, commands.BucketType.user)
-    @lewd.command(aliases=["gif"], help="Posts a kawaii lewd neko gif")
-    @commands.is_nsfw()
-    async def lewd_gif(self, ctx):
-            await ctx.send(file=discord.File(await image("https://nekos.life/api/v2/img/nsfw_neko_gif"), "neko_lewd_gif.gif")) #this too
+    async def nsfw(self, ctx):
+        async with ctx.channel.typing():
+            async with self.bot.session.get("https://api.waifu.pics/nsfw/waifu") as resp:
+                url = loads(await resp.text())["url"]
+                logging.info(url)
+            async with self.bot.session.get(url) as resp:
+                root, ext = splitext(url)
+                try:
+                    await ctx.reply(file=File(BytesIO(await resp.read()), f"kawaii_waifu{ext}"))
+                except HTTPException:
+                    await ctx.reply(url)
 
 
 def setup(bot):
